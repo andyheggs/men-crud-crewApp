@@ -1,0 +1,9 @@
+/* CSS for hiding and showing dropdowns */
+.hidden {
+    display: none;
+  }
+  
+  .block {
+    display: block;
+  }
+  

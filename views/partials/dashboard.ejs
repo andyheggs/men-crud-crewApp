@@ -1,0 +1,318 @@
+<h1>Dashboard</h1>
+
+<!-- Form for adding new agency -->
+<section>
+  <h2>Add New Agency</h2>
+  <form action="/agencies" method="POST">
+    <!-- Form fields for agency -->
+    <div>
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required>
+    </div>
+    <div>
+      <label for="profileLoginUrl">Profile Login URL:</label>
+      <input type="text" id="profileLoginUrl" name="profileLoginUrl" required>
+    </div>
+    <div>
+      <label for="agentName">Agent Name:</label>
+      <input type="text" id="agentName" name="agentName">
+    </div>
+    <div>
+      <label for="agentEmail">Agent Email:</label>
+      <input type="email" id="agentEmail" name="agentEmail">
+    </div>
+    <div>
+      <label for="agentTelNo">Agent Telephone Number:</label>
+      <input type="text" id="agentTelNo" name="agentTelNo">
+    </div>
+    <div>
+      <label for="streetAddress">Street Address:</label>
+      <input type="text" id="streetAddress" name="streetAddress">
+    </div>
+    <div>
+      <label for="city">City:</label>
+      <input type="text" id="city" name="city">
+    </div>
+    <div>
+      <label for="country">Country:</label>
+      <input type="text" id="country" name="country">
+    </div>
+    <div>
+      <label for="contactNumber">Contact Number:</label>
+      <input type="text" id="contactNumber" name="contactNumber">
+    </div>
+    <div>
+      <label for="operatingHours">Operating Hours:</label>
+      <input type="text" id="operatingHours" name="operatingHours">
+    </div>
+    <button type="submit">Add Agency</button>
+  </form>
+</section>
+
+<!-- Form for adding new platform -->
+<section>
+  <h2>Add New Platform</h2>
+  <form action="/platforms" method="POST">
+    <!-- Form fields for platform -->
+    <div>
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required>
+    </div>
+    <div>
+      <label for="profileLoginUrl">Profile Login URL:</label>
+      <input type="text" id="profileLoginUrl" name="profileLoginUrl" required>
+    </div>
+    <div>
+      <label for="contactNumber">Contact Number:</label>
+      <input type="text" id="contactNumber" name="contactNumber">
+    </div>
+    <button type="submit">Add Platform</button>
+  </form>
+</section>
+
+<!-- Form for adding new job -->
+<section>
+  <h2>Add New Job</h2>
+  <form action="/jobs" method="POST">
+    <div>
+      <label for="url">URL:</label>
+      <input type="text" id="url" name="url" required>
+    </div>
+    <div>
+      <label for="title">Title:</label>
+      <input type="text" id="title" name="title" required>
+    </div>
+    <div>
+      <label for="referenceNumber">Reference Number:</label>
+      <input type="text" id="referenceNumber" name="referenceNumber">
+    </div>
+    <div>
+      <label for="closingDate">Closing Date:</label>
+      <input type="date" id="closingDate" name="closingDate">
+    </div>
+    <div>
+      <label for="status">Status:</label>
+      <input type="text" id="status" name="status">
+    </div>
+    <div>
+      <label for="notes">Notes:</label>
+      <textarea id="notes" name="notes"></textarea>
+    </div>
+    <div>
+      <label>
+        <input type="radio" name="type" value="agency" onclick="showDropdown('agency')" required>
+        Agency
+      </label>
+      <label>
+        <input type="radio" name="type" value="platform" onclick="showDropdown('platform')" required>
+        Platform
+      </label>
+    </div>
+    <div id="agencyDropdown" class="hidden">
+      <label for="agency">Agency:</label>
+      <select id="agency" name="agency">
+        <% agencies.forEach(agency => { %>
+          <option value="<%= agency._id %>"><%= agency.name %></option>
+        <% }) %>
+      </select>
+    </div>
+    <div id="platformDropdown" class="hidden">
+      <label for="platform">Platform:</label>
+      <select id="platform" name="platform">
+        <% platforms.forEach(platform => { %>
+          <option value="<%= platform._id %>"><%= platform.name %></option>
+        <% }) %>
+      </select>
+    </div>
+    <button type="submit">Add Job</button>
+  </form>
+</section>
+
+<!-- Script to show/hide dropdowns based on selection -->
+<script>
+  function showDropdown(type) {
+    document.getElementById('agencyDropdown').classList.toggle('hidden', type !== 'agency');
+    document.getElementById('platformDropdown').classList.toggle('hidden', type !== 'platform');
+  }
+
+  function showEditForm(formId) {
+    document.getElementById(formId).classList.remove('hidden');
+  }
+
+  function setDisplay(id, display) {
+    document.getElementById(id).style.display = display;
+  }
+</script>
+
+<!-- Section to display existing agencies -->
+<section>
+  <h2>Agencies</h2>
+  <ul>
+    <% if (agencies.length > 0) { %>
+      <% agencies.forEach(agency => { %>
+        <li>
+          <a href="<%= agency.profileLoginUrl %>"><%= agency.name %></a>
+          <button onclick="showEditForm('editAgencyForm<%= agency._id %>')">Edit</button>
+          <form action="/agencies/<%= agency._id %>?_method=DELETE" method="POST">
+            <button type="submit">Delete</button>
+          </form>
+          <form id="editAgencyForm<%= agency._id %>" action="/agencies/<%= agency._id %>?_method=PUT" method="POST" class="hidden">
+            <div>
+              <label for="name">Name:</label>
+              <input type="text" id="name" name="name" value="<%= agency.name %>" required>
+            </div>
+            <div>
+              <label for="profileLoginUrl">Profile Login URL:</label>
+              <input type="text" id="profileLoginUrl" name="profileLoginUrl" value="<%= agency.profileLoginUrl %>" required>
+            </div>
+            <div>
+              <label for="agentName">Agent Name:</label>
+              <input type="text" id="agentName" name="agentName" value="<%= agency.agentName %>">
+            </div>
+            <div>
+              <label for="agentEmail">Agent Email:</label>
+              <input type="email" id="agentEmail" name="agentEmail" value="<%= agency.agentEmail %>">
+            </div>
+            <div>
+              <label for="agentTelNo">Agent Telephone Number:</label>
+              <input type="text" id="agentTelNo" name="agentTelNo" value="<%= agency.agentTelNo %>">
+            </div>
+            <div>
+              <label for="streetAddress">Street Address:</label>
+              <input type="text" id="streetAddress" name="streetAddress" value="<%= agency.streetAddress %>">
+            </div>
+            <div>
+              <label for="city">City:</label>
+              <input type="text" id="city" name="city" value="<%= agency.city %>">
+            </div>
+            <div>
+              <label for="country">Country:</label>
+              <input type="text" id="country" name="country" value="<%= agency.country %>">
+            </div>
+            <div>
+              <label for="contactNumber">Contact Number:</label>
+              <input type="text" id="contactNumber" name="contactNumber" value="<%= agency.contactNumber %>">
+            </div>
+            <div>
+              <label for="operatingHours">Operating Hours:</label>
+              <input type="text" id="operatingHours" name="operatingHours" value="<%= agency.operatingHours %>">
+            </div>
+            <button type="submit">Update Agency</button>
+          </form>
+        </li>
+      <% }) %>
+    <% } else { %>
+      <li>No agencies found.</li>
+    <% } %>
+  </ul>
+</section>
+
+<!-- Section to display existing platforms -->
+<section>
+  <h2>Platforms</h2>
+  <ul>
+    <% if (platforms.length > 0) { %>
+      <% platforms.forEach(platform => { %>
+        <li>
+          <a href="<%= platform.profileLoginUrl %>"><%= platform.name %></a>
+          <button onclick="showEditForm('editPlatformForm<%= platform._id %>')">Edit</button>
+          <form action="/platforms/<%= platform._id %>?_method=DELETE" method="POST">
+            <button type="submit">Delete</button>
+          </form>
+          <form id="editPlatformForm<%= platform._id %>" action="/platforms/<%= platform._id %>?_method=PUT" method="POST" class="hidden">
+            <div>
+              <label for="name">Name:</label>
+              <input type="text" id="name" name="name" value="<%= platform.name %>" required>
+            </div>
+            <div>
+              <label for="profileLoginUrl">Profile Login URL:</label>
+              <input type="text" id="profileLoginUrl" name="profileLoginUrl" value="<%= platform.profileLoginUrl %>" required>
+            </div>
+            <div>
+              <label for="contactNumber">Contact Number:</label>
+              <input type="text" id="contactNumber" name="contactNumber" value="<%= platform.contactNumber %>">
+            </div>
+            <button type="submit">Update Platform</button>
+          </form>
+        </li>
+      <% }) %>
+    <% } else { %>
+      <li>No platforms found.</li>
+    <% } %>
+  </ul>
+</section>
+
+<!-- Section to display existing jobs -->
+<section>
+  <h2>Jobs</h2>
+  <ul>
+    <% if (jobs.length > 0) { %>
+      <% jobs.forEach(job => { %>
+        <li>
+          <a href="<%= job.url %>"><%= job.title %></a>
+          <p>Type: <%= job.agency ? 'Agency' : 'Platform' %></p>
+          <p>Name: <%= job.agency ? agencies.find(a => a._id.toString() === job.agency.toString()).name : platforms.find(p => p._id.toString() === job.platform.toString()).name %></p>
+          <button onclick="showEditForm('editJobForm<%= job._id %>')">Edit</button>
+          <form action="/jobs/<%= job._id %>?_method=DELETE" method="POST">
+            <button type="submit">Delete</button>
+          </form>
+          <form id="editJobForm<%= job._id %>" action="/jobs/<%= job._id %>?_method=PUT" method="POST" class="hidden">
+            <div>
+              <label for="url">URL:</label>
+              <input type="text" id="url" name="url" value="<%= job.url %>" required>
+            </div>
+            <div>
+              <label for="title">Title:</label>
+              <input type="text" id="title" name="title" value="<%= job.title %>" required>
+            </div>
+            <div>
+              <label for="referenceNumber">Reference Number:</label>
+              <input type="text" id="referenceNumber" name="referenceNumber" value="<%= job.referenceNumber %>">
+            </div>
+            <div>
+              <label for="closingDate">Closing Date:</label>
+              <input type="date" id="closingDate" name="closingDate" value="<%= job.closingDate ? job.closingDate.toISOString().split('T')[0] : '' %>">
+            </div>
+            <div>
+              <label for="status">Status:</label>
+              <input type="text" id="status" name="status" value="<%= job.status %>">
+            </div>
+            <div>
+              <label for="notes">Notes:</label>
+              <textarea id="notes" name="notes"><%= job.notes %></textarea>
+            </div>
+            <div>
+              <label>
+                <input type="radio" name="type" value="agency" onclick="setDisplay('agencyDropdown<%= job._id %>', 'block'); setDisplay('platformDropdown<%= job._id %>', 'none')" <%= job.agency ? 'checked' : '' %> required>
+                Agency
+              </label>
+              <label>
+                <input type="radio" name="type" value="platform" onclick="setDisplay('platformDropdown<%= job._id %>', 'block'); setDisplay('agencyDropdown<%= job._id %>', 'none')" <%= job.platform ? 'checked' : '' %> required>
+                Platform
+              </label>
+            </div>
+            <div id="agencyDropdown<%= job._id %>" class="<%= job.agency ? 'block' : 'hidden' %>">
+              <label for="agency">Agency:</label>
+              <select id="agency" name="agency">
+                <% agencies.forEach(agency => { %>
+                  <option value="<%= agency._id %>" <%= job.agency && job.agency.toString() === agency._id.toString() ? 'selected' : '' %>><%= agency.name %></option>
+                <% }) %>
+              </select>
+            </div>
+            <div id="platformDropdown<%= job._id %>" class="<%= job.platform ? 'block' : 'hidden' %>">
+              <label for="platform">Platform:</label>
+              <select id="platform" name="platform">
+                <% platforms.forEach(platform => { %>
+                  <option value="<%= platform._id %>" <%= job.platform && job.platform.toString() === platform._id.toString() ? 'selected' : '' %>><%= platform.name %></option>
+                <% }) %>
+              </select>
+            </div>
+            <button type="submit">Update Job</button>
+          </form>
+        </li>
+      <% }) %>
+    <% } else { %>
+      <li>No jobs found.</li>
+    <% } %>
+  </ul>
+</section>
